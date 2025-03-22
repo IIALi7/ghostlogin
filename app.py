@@ -5,6 +5,7 @@ app.secret_key = 'supersecretghost'
 
 # Simulated database (username: password)
 users_db = {}
+users_db.clear()
 
 @app.route('/')
 def index():
@@ -16,7 +17,9 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
-        # Direct character match only — no lowercase comparison
+        print("[DEBUG] Trying to register:", username)
+        print("[DEBUG] Existing users:", list(users_db.keys()))
+
         if username in users_db:
             return 'Username already taken!'
 
@@ -24,6 +27,7 @@ def register():
         return redirect('/login')
 
     return render_template('register.html')
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
