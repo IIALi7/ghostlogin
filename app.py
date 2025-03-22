@@ -36,8 +36,9 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        if users_db.get(username) == password:
-            session['user'] = username.capitalize()
+       if users_db.get(username) == password:
+    session['user'] = username  # <- No capitalization
+
             return redirect('/admin')
         return 'Invalid credentials!'
 
@@ -45,8 +46,9 @@ def login():
 
 @app.route('/admin')
 def admin():
-    print("[DEBUG] session['user']:", session.get('user'))
-    print("[DEBUG] session raw:", dict(session))
+  print("[DEBUG] session['user']:", session.get('user'))
+print("[DEBUG] ord values:", [ord(c) for c in session.get('user', '')])
+
     if session.get('user') == 'Admin':
         return render_template('admin.html', flag='D4rk{homoglyph_attack_success}')
     return 'Access Denied!', 403
