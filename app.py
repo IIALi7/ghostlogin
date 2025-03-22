@@ -5,7 +5,6 @@ app.secret_key = 'supersecretghost'
 
 # Simulated database (username: password)
 users_db = {}
-users_db.clear()
 
 @app.route('/')
 def index():
@@ -13,6 +12,9 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    global users_db
+    users_db = {}  # Clear users on each visit (DEV ONLY - REMOVE in prod)
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -27,8 +29,6 @@ def register():
         return redirect('/login')
 
     return render_template('register.html')
-
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -45,6 +45,8 @@ def login():
 
 @app.route('/admin')
 def admin():
+    print("[DEBUG] session['user']:", session.get('user'))
+    print("[DEBUG] session raw:", dict(session))
     if session.get('user') == 'Admin':
         return render_template('admin.html', flag='D4rk{homoglyph_attack_success}')
     return 'Access Denied!', 403
