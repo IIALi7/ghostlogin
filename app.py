@@ -50,9 +50,11 @@ def admin():
     print("[DEBUG] session['user']:", session.get('user'))
     print("[DEBUG] ord values:", [ord(c) for c in session.get('user', '')])
 
-    if session.get('user') == 'Admin':
+    # 🔥 Bypass works ONLY if homoglyph is used
+    if session.get('user') == 'Аdmin':  # <-- Cyrillic A here
         return render_template('admin.html', flag='D4rk{homoglyph_attack_success}')
     return 'Access Denied!', 403
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
