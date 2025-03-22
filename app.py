@@ -1,5 +1,4 @@
 from flask import Flask, request, session, redirect, render_template
-import unicodedata
 
 app = Flask(__name__)
 app.secret_key = 'supersecretghost'
@@ -17,13 +16,11 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
-        # Normalize and store lowercase version
-        normalized_username = unicodedata.normalize('NFC', username.lower())
-
-        if normalized_username in users_db:
+        # Loosened: no unicode normalization — only basic lowercase collision check
+        if username.lower() in (u.lower() for u in users_db):
             return 'Username already taken!'
 
-        users_db[normalized_username] = password
+        users_db[username] = password
         return redirect('/login')
 
     return render_template('register.html')
@@ -34,9 +31,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        normalized_username = unicodedata.normalize('NFC', username.lower())
-        if users_db.get(normalized_username) == password:
-            # Capitalize first character (bypass opportunity here)
+        if users_db.get(username) == password:
             session['user'] = username.capitalize()
             return redirect('/admin')
         return 'Invalid credentials!'
