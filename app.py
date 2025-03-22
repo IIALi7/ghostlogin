@@ -16,14 +16,15 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
-        # Loosened: no unicode normalization — only basic lowercase collision check
-        if username.lower() in (u.lower() for u in users_db):
+        # Direct character match only — no lowercase comparison
+        if username in users_db:
             return 'Username already taken!'
 
         users_db[username] = password
         return redirect('/login')
 
     return render_template('register.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
